@@ -1,0 +1,35 @@
+	.data
+prompt1:.asciiz	"Introduza um numero: "
+result:	.asciiz	"\n O numero em hexadecimal e: "
+	.text
+	.globl	main
+
+main:
+	la	$a0,prompt1
+	li	$v0,4
+	syscall
+	
+	li	$v0,5
+	syscall
+	
+	move	$s0,$v0
+	
+	move	$t0,$s0	#num = readInt
+	li	$t1,0	#n = 0
+for:
+	bge	$t1,8,end
+	
+	andi	$a0,$t0,0xf0000000
+	srl	$a0,$a0,28
+	
+	li	$v0,34
+	syscall
+	
+	sll	$t0,$t0,4
+	addi	$t1,$t1,1
+	
+	j	for
+
+end:
+	li	$v0,10
+	syscall

@@ -1,0 +1,56 @@
+	.data
+lista:	.space	6
+prompt:	.asciiz	"Insira 6 numeros:\n"
+	
+	.text
+	.globl	main
+
+main:	
+	la	$a0,prompt
+	li	$v0,4
+	syscall
+	
+	li	$t0,0
+	la	$a1,lista
+
+for:
+	bge	$t0,6,end
+			
+	sll	$t1,$t0,2
+	add	$t2,$a1,$t1
+	
+	li	$v0,5
+	syscall
+	
+	sb	$v0,0($t2)
+	
+	addi	$t0,$t0,1
+	
+	j	for
+
+end:
+	li	$t0,0
+	for2:
+		bge	$t0,6,trueEnd
+	
+		sll	$t1,$t0,2
+		add	$t2,$t1,$a1
+		lb	$t2,0($t2)
+	
+		move	$a0,$t2
+		li	$v0,1
+		syscall
+	
+		la	$a0,'-'
+		li	$v0,11
+		syscall
+	
+		addi	$t0,$t0,1
+	
+		j	for2
+
+	trueEnd:
+		li	$v0,10
+		syscall
+	
+	

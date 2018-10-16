@@ -1,0 +1,100 @@
+	.data
+	
+prompt:	.asciiz	"Insira um texto:\n"
+minus:	.space	20
+maius:	.space	20
+
+	.text
+	.globl	main
+
+main:	
+	la	$s0,prompt
+	
+	move	$a0,$s0
+	li	$v0,4
+	syscall
+	
+	li	$a1,20
+	li	$v0,8
+	syscall
+	
+	move	$a1,$a0
+	
+	la	$a0,maius
+	
+	jal	minusToMaius
+	
+	move	$a0,$v0
+	li	$v0,4
+	syscall
+
+########################################
+	move	$a0,$s0
+	li	$v0,4
+	syscall
+	
+	li	$a1,20
+	li	$v0,8
+	syscall
+	
+	move	$a1,$a0
+	
+	la	$a0,minus
+	
+	jal	maiusToMinus
+	
+	move	$a0,$v0
+	li	$v0,4
+	syscall
+	
+	li	$v0,10
+	syscall
+
+minusToMaius:
+	move	$v0,$a0
+	li	$t0,0
+	while:	
+		add	$t1,$a1,$t0
+		lb	$t1,0($t1)
+		beqz	$t1,end
+	
+		add	$t2,$v0,$t0
+	
+		bgt	$t1,122,increment
+		blt	$t1,97,increment
+	
+		addi	$t1,$t1,-32
+
+	increment:
+		sb	$t1,0($t2)
+		addi	$t0,$t0,1
+		j	while
+
+	end:
+		jr	$ra
+	
+maiusToMinus:
+	move	$v0,$a0
+	li	$t0,0
+	while2:	
+		add	$t1,$a1,$t0
+		lb	$t1,0($t1)
+		beqz	$t1,end2
+	
+		add	$t2,$v0,$t0
+	
+		bgt	$t1,90,increment2
+		blt	$t1,65,increment2
+	
+		addi	$t1,$t1,32
+
+	increment2:
+		sb	$t1,0($t2)
+		addi	$t0,$t0,1
+		j	while2
+
+	end2:
+		jr	$ra
+		
+	
+	

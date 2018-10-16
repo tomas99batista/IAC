@@ -1,0 +1,108 @@
+	.data
+lista:	.space	6
+prompt:	.asciiz	"Insira 6 numeros:\n"
+	
+	.text
+	.globl	main
+
+main:	
+	jal	createArray
+	move	$a1,$v0
+	
+	#jal	readArray
+	jal	sortArray
+	move	$a1,$v0
+	
+	jal	readArray
+	
+	li	$v0,10
+	syscall
+
+createArray:
+	la	$a0,prompt
+	li	$v0,4
+	syscall
+	
+	li	$t0,0
+	la	$a1,lista
+	for:
+		bge	$t0,6,end
+			
+		sll	$t1,$t0,2
+		add	$t2,$a1,$t1
+	
+		li	$v0,5
+		syscall
+	
+		sb	$v0,0($t2)
+	
+		addi	$t0,$t0,1
+	
+		j	for
+
+	end:
+		move	$v0,$a1
+		jr	$ra
+
+readArray:
+	li	$t0,0
+	for2:
+		bge	$t0,6,trueEnd
+	
+		sll	$t1,$t0,2
+		add	$t2,$t1,$a1
+		lb	$t2,0($t2)
+	
+		move	$a0,$t2
+		li	$v0,1
+		syscall
+	
+		la	$a0,'-'
+		li	$v0,11
+		syscall
+	
+		addi	$t0,$t0,1
+	
+		j	for2
+
+	trueEnd:
+		jr	$ra
+	
+sortArray:
+	li	$t1,0	#int i = 0
+	
+	while:
+		li	$t0,0	#houveTroca = false
+		for3:			
+			bge	$t1,5,endFor	#break i>=(6-1)
+			
+			sll	$t2,$t1,2	#Shift to align	
+			add	$t3,$t2,$a1	#get lista[i] address
+			lb	$t4,0($t3)	#get lista[i] value
+			
+			addi	$t2,$t1,1	#t2 = i+1
+			sll	$t2,$t2,2	#Shift to align	
+			add	$t5,$t2,$a1	#get lista[i] address
+			lb	$t6,0($t5)	#get lista[i] value
+			
+			addi	$t1,$t1,1	#i++
+			
+			ble	$t4,$t6,for3	#if lista[i]<=lista[i+1] dont do the if body
+			
+			sb	$t6,0($t3)
+			sb	$t4,0($t5)
+			
+			li	$t0,1		#houveTroca = true
+			
+			j	for3
+			
+		endFor:
+			beq	$t0,0,endWhile
+			j	while
+			
+	endWhile:
+		move	$v0,$a1
+		jr	$ra
+		
+			
+	
